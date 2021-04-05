@@ -13,12 +13,18 @@
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "apollo-server-fastify": "^3.0.0-alpha.3",
     "aws-sdk": "^2.879.0",
     "bcryptjs": "^2.4.3",
+    "dayjs": "^1.10.4",
     "fastify": "^3.14.1",
+    "graphql": "^15.5.0",
+    "graphql-subscriptions": "^1.2.1",
+    "graphql-tools": "4.x",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^5.12.3",
+    "subscriptions-transport-ws": "^0.9.18",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
