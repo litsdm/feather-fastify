@@ -12,17 +12,7 @@ export default gql`
   }
 
   type Mutation {
-    createFile(
-      name: String!
-      s3Url: String!
-      s3Filename: String!
-      to: [String]!
-      from: String!
-      type: String!
-      size: Int!
-      linkSlug: String
-      extra: String
-    ): File
+    createFile(body: String!, extra: String): File
     deleteFile(_id: String!, userID: String!): File
     updateFile(_id: String!, properties: String!): File
     createLink(

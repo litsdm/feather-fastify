@@ -79,7 +79,8 @@ export default {
           $and: [
             { from: userID },
             { to: { $ne: [] } },
-            { linkSlug: { $ne: '' } }
+            { to: { $ne: userID } }
+            // { linkSlug: { $ne: '' } }
           ]
         },
         {},
@@ -88,17 +89,18 @@ export default {
         .limit(take || 20)
         .skip(skip || 0)
         .exec();
+      console.log(allFiles);
       const files = await removeExpired(allFiles, File);
       return files;
     }
   },
   Mutation: {
-    createFile: async (parent, args, context) => {
+    createFile: async (parent, { body, extra }, context) => {
       const {
         models: { File, Link },
         pubsub
       } = context;
-      const { extra, ...fileBody } = args;
+      const fileBody = JSON.parse(body);
       const newFile = new File(fileBody);
 
       const now = new Date();
@@ -148,7 +150,7 @@ export default {
 
       return file;
     },
-    updateFile: async (parent, { _id, properties }, context) => {
+    updateFile: async (parent, { _id, properties, senderID }, context) => {
       const {
         models: { File },
         pubsub
@@ -185,6 +187,7 @@ export default {
 
       await file.save();
 
+      if (senderID) updatedFile.senderID = senderID;
       pubsub.publish('FILE_UPDATED', { updatedFile: file });
 
       return file;
