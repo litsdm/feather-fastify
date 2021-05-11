@@ -162,7 +162,7 @@ export default {
         (payload, { userID }) => {
           if (!payload) return false;
 
-          if (payload.createdLink.to.length === 0) return false;
+          // if (payload.createdLink.to.length === 0) return false;
 
           return (
             payload.createdLink.to.includes(userID) ||

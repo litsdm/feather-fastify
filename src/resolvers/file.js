@@ -10,7 +10,10 @@ import { deleteFile } from '../api/v1/actions/s3/delete';
 dayjs.extend(IsSameOrAfter);
 
 const linkToLink = async (_id, slug, Link) => {
-  const link = await Link.findOne({ slug }).exec();
+  const link = await Link.findOne({ slug });
+
+  if (!link) return;
+
   link.files = [...link.files, _id];
   await link.save();
 };
@@ -89,7 +92,6 @@ export default {
         .limit(take || 20)
         .skip(skip || 0)
         .exec();
-      console.log(allFiles);
       const files = await removeExpired(allFiles, File);
       return files;
     }
