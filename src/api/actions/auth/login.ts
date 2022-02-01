@@ -1,9 +1,7 @@
 import { Client } from 'edgedb';
 
-import {
-  comparePasswords,
-  generateEncryptedToken
-} from '../../../lib/encryption';
+import TokenManager from '../../../lib/tokenManager';
+import { comparePasswords } from '../../../lib/encryption';
 
 import { User } from '../../../types';
 
@@ -20,7 +18,8 @@ const options = {
       200: {
         type: 'object',
         properties: {
-          token: { type: 'string' }
+          token: { type: 'string' },
+          refreshToken: { type: 'string' }
         }
       }
     }
@@ -42,11 +41,11 @@ const login = async ({ db, body }, reply) => {
   const { email, password } = body;
 
   try {
-    const user = await findUser(db, email);
-    await comparePasswords(password, user.password);
-    const token = generateEncryptedToken(user);
+    const { password: userPassword, ...user } = await findUser(db, email);
+    await comparePasswords(password, userPassword);
+    const { accessToken, refreshToken } = TokenManager.generateTokens(user);
 
-    return { token };
+    return { token: accessToken, refreshToken };
   } catch (exception) {
     reply.code(401);
     throw new Error(exception.message);

@@ -1,6 +1,7 @@
 import { Client } from 'edgedb';
 
-import { hashPassword, generateEncryptedToken } from '../../../lib/encryption';
+import TokenManager from '../../../lib/tokenManager';
+import { hashPassword } from '../../../lib/encryption';
 
 import { User } from '../../../types';
 
@@ -40,7 +41,8 @@ const options = {
       200: {
         type: 'object',
         properties: {
-          token: { type: 'string' }
+          token: { type: 'string' },
+          refreshToken: { type: 'string' }
         }
       }
     }
@@ -110,9 +112,9 @@ const signup = async ({ db, body }, reply) => {
   try {
     await checkExistingUser(db, email);
     const user = await createUser(db, body);
-    const token = generateEncryptedToken(user);
+    const { accessToken, refreshToken } = TokenManager.generateTokens(user);
 
-    return { token };
+    return { token: accessToken, refreshToken };
   } catch (exception) {
     console.log(exception.message);
     reply.code(401);
