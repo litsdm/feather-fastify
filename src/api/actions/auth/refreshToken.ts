@@ -14,10 +14,12 @@ const options = {
 const refreshToken = async ({ headers }, reply) => {
   try {
     const encryptedToken = headers.authorization.substr(7);
-    const { exp, ...payload } = await TokenManager.verifyEncryptedToken(
+    const { exp, iat, ...payload } = await TokenManager.verifyEncryptedToken(
       encryptedToken,
       true
     );
+
+    console.log(payload);
 
     const token = TokenManager.generateAccessToken(payload);
 
