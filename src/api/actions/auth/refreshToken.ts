@@ -19,8 +19,6 @@ const refreshToken = async ({ headers }, reply) => {
       true
     );
 
-    console.log(payload);
-
     const token = TokenManager.generateAccessToken(payload);
 
     return { token };
