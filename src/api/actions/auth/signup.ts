@@ -76,34 +76,30 @@ const createUser = async (
     email,
     password: hashedPassword,
     placeholderColor: PH_COLORS[Math.floor(Math.random() * PH_COLORS.length)],
-    isPro: false,
     username,
     discriminator,
     tag
   };
 
-  await db.query<User>(
-    `insert User {
+  const user = await db.querySingle<User>(
+    `with user := (insert User {
       createdAt := <str>$createdAt,
       updatedAt := <str>$updatedAt,
       lastConnection := <str>$lastConnection,
       email := <str>$email,
       password := <str>$password,
       placeholderColor := <str>$placeholderColor,
-      isPro := <bool>$isPro,
       username := <str>$username,
       discriminator := <str>$discriminator,
-      tag := <str>$tag,
-    }`,
+      tag := <str>$tag
+    })
+    select user { id, email, username, role, isPro }`,
     userData
   );
 
-  const user = await db.querySingle<User>(
-    `select User { id, email, username, role, isPro } filter .email = <str>$email`,
-    { email }
-  );
+  if (!user) throw new Error('Error creating user.');
 
-  return user;
+  return { ...user };
 };
 
 const signup = async ({ db, body }, reply) => {

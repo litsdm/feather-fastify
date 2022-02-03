@@ -1,10 +1,10 @@
 module default {
   type User {
-    required property email -> str {
+    property email -> str {
       constraint exclusive;
     }
-    required property password -> str;
-    required property username -> str;
+    property password -> str;
+    property username -> str;
   
     property createdAt -> str;
     property updatedAt -> str;
@@ -21,9 +21,6 @@ module default {
     }
     property role -> str {
       default := "user"
-    }
-    property remainingBytes -> int64 {
-      default := 2147483648
     }
     property remainingTransfers -> int16 {
       default := 3
