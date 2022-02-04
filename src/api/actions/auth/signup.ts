@@ -49,6 +49,15 @@ const options = {
   }
 };
 
+const checkAndDeleteGuest = async (client: Client, authorization: string) => {
+  const encryptedToken = authorization.slice(7);
+  const { id, role } = await TokenManager.verifyEncryptedToken(encryptedToken);
+
+  if (role !== 'guest') return;
+
+  await client.querySingle(`delete User filter .id = <uuid>$id`, { id });
+};
+
 const checkExistingUser = async (db: Client, email: string) => {
   const user = await db.querySingle(
     `select User { id, email } filter .email = <str>$email`,
@@ -102,10 +111,12 @@ const createUser = async (
   return { ...user };
 };
 
-const signup = async ({ db, body }, reply) => {
+const signup = async ({ db, body, headers }, reply) => {
   const { email } = body;
 
   try {
+    if (headers.authorization) checkAndDeleteGuest(db, headers.authorization);
+
     await checkExistingUser(db, email);
     const user = await createUser(db, body);
     const { accessToken, refreshToken } = TokenManager.generateTokens(user);
