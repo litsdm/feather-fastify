@@ -17,6 +17,7 @@
     "crypto-js": "^4.1.1",
     "edgedb": "^0.18.0",
     "fastify": "^3.27.0",
+    "fastify-cors": "^6.0.2",
     "jsonwebtoken": "^8.5.1",
     "pify": "^5.0.0",
     "regenerator-runtime": "^0.13.9"
