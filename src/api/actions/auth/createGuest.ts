@@ -20,20 +20,24 @@ const options = {
   }
 };
 
-const insertGuest = (client: Client) => {
+const insertGuest = async (client: Client) => {
   const now = new Date();
+
+  const username = `Guest${Math.random().toString().slice(2, 6)}`;
+  /* const discriminator = `${Math.random().toString().slice(2, 6)}`;
+  const tag = `${username}#${discriminator}`; */
 
   const guestData = {
     createdAt: now.toString(),
     updatedAt: now.toString(),
     lastConnection: now.toString(),
-    username: `Guest${Math.random().toString().slice(2, 6)}`,
+    username,
     placeholderColor: PH_COLORS[Math.floor(Math.random() * PH_COLORS.length)],
     role: 'guest'
   };
 
-  const guest = client.querySingle<User>(
-    `with guest := (insert User {
+  const guest = await client.querySingle<User>(
+    `with user := (insert User {
       createdAt := <str>$createdAt,
       updatedAt := <str>$updatedAt,
       lastConnection := <str>$lastConnection,
@@ -41,7 +45,7 @@ const insertGuest = (client: Client) => {
       username := <str>$username,
       role := <str>$role
     })
-    select guest { id, email, username, role, isPro }`,
+    select user { id, email, username, role, isPro }`,
     guestData
   );
 
