@@ -47,7 +47,9 @@ const findUser = async (db: Client, email: string): Promise<User> => {
 };
 
 const login = async ({ db, body, headers }, reply) => {
-  const { email, password } = body;
+  const { email: rawEmail, password } = body;
+
+  const email = rawEmail.toLowerCase().trim();
 
   try {
     if (headers.authorization) checkAndDeleteGuest(db, headers.authorization);

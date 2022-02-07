@@ -52,9 +52,10 @@ const checkExistingUser = async (db: Client, email: string) => {
 
 const createUser = async (
   db: Client,
-  { email, password }: Body
+  { email: rawEmail, password }: Body
 ): Promise<User> => {
   const now = new Date();
+  const email = rawEmail.toLowerCase().trim();
 
   const hashedPassword = await hashPassword(password);
   const username = email.split('@')[0];
@@ -95,7 +96,8 @@ const createUser = async (
 };
 
 const signup = async ({ db, body, headers }, reply) => {
-  const { email } = body;
+  const { email: rawEmail } = body;
+  const email = rawEmail.toLowerCase().trim();
 
   try {
     if (headers.authorization) checkAndDeleteGuest(db, headers.authorization);
