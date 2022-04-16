@@ -38,5 +38,7 @@ export default gql`
     fileType: String
     senderDevice: String
     remainingExpiryModifications: Int
+    from: User
+    to: [User]
   }
 `;

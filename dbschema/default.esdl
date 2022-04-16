@@ -39,6 +39,9 @@ module default {
     property fileType -> str;
     property senderDevice -> str;
 
+    link from -> User;
+    multi link to -> User;
+
     property remainingExpiryModifications -> int16 {
       default := 2
     }
