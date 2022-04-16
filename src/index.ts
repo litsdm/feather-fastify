@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 
 import initialize from './initialize';
 import api from './api';
+import registerApollo from './apollo';
 
 const fastify = Fastify({ logger: false });
 
@@ -11,8 +12,9 @@ const PORT = process.env.PORT || 8080;
 initialize(async ({ db }) => {
   try {
     fastify.decorateRequest('db', { getter: () => db });
-
     fastify.register(api, { prefix: '/api' });
+
+    await registerApollo(fastify, db);
 
     await fastify.listen(PORT, '0.0.0.0');
     console.log(`📡 Listening on port ${PORT} 🚀`);

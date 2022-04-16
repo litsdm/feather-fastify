@@ -26,4 +26,21 @@ module default {
       default := 3
     }
   }
+
+  type File {
+    property createdAt -> str;
+    property updatedAt -> str;
+    property expiresAt -> str;
+
+    required property name -> str;
+    required property size -> int64;
+    property url -> str;
+    property hostFilename -> str;
+    property fileType -> str;
+    property senderDevice -> str;
+
+    property remainingExpiryModifications -> int16 {
+      default := 2
+    }
+  }
 }
