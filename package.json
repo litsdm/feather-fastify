@@ -17,6 +17,7 @@
     "apollo-server-fastify": "^3.6.7",
     "bcrypt": "^5.0.1",
     "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.1",
     "edgedb": "^0.18.0",
     "fastify": "^3.27.0",
     "fastify-cors": "^6.0.2",
