@@ -40,7 +40,7 @@ const registerApollo = async (app: FastifyInstance, db: Client) => {
       fastifyAppClosePlugin(app),
       ApolloServerPluginDrainHttpServer({ httpServer: app.server })
     ],
-    context: async ({ request, reply }) => {
+    context: async ({ request }) => {
       try {
         await getUserPayload(request);
         return { db, request };
