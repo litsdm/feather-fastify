@@ -1,10 +1,24 @@
 import { ApolloServer } from 'apollo-server-fastify';
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import { FastifyInstance } from 'fastify';
+import {
+  ApolloServerPluginDrainHttpServer,
+  AuthenticationError
+} from 'apollo-server-core';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { Client } from 'edgedb';
 
 import typeDefs from './graphql/schema';
 import resolvers from './graphql/resolvers';
+import TokenManager from './lib/tokenManager';
+
+const getUserPayload = async (request: FastifyRequest) => {
+  const { authorization } = request.headers;
+  if (!authorization) throw new Error('Unauthorized: no token provided');
+
+  const encryptedToken = authorization.slice(7);
+
+  const payload = await TokenManager.verifyEncryptedToken(encryptedToken);
+  return payload;
+};
 
 const fastifyAppClosePlugin = (app: FastifyInstance) => {
   return {
@@ -26,9 +40,13 @@ const registerApollo = async (app: FastifyInstance, db: Client) => {
       fastifyAppClosePlugin(app),
       ApolloServerPluginDrainHttpServer({ httpServer: app.server })
     ],
-    context: ({ request }) => {
-      // TODO: Make authorization middleware here
-      return { db, request };
+    context: async ({ request, reply }) => {
+      try {
+        await getUserPayload(request);
+        return { db, request };
+      } catch (exception) {
+        throw new AuthenticationError(exception.message);
+      }
     }
   });
 
