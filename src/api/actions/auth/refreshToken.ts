@@ -87,6 +87,8 @@ const validateRefreshToken = async (
 
 const refreshTokenIfNeeded = async ({ db, headers, query }, reply) => {
   try {
+    if (!headers.authorization) throw new Error('Access token is required');
+
     const accessToken = headers.authorization.substr(7);
     const refreshToken = headers['x-refresh-token'];
 
@@ -108,7 +110,7 @@ const refreshTokenIfNeeded = async ({ db, headers, query }, reply) => {
 
     return { token: guestAccess, refreshToken: guestRefresh };
   } catch (exception) {
-    console.log(exception.message);
+    console.log(`[refreshToken]: ${exception.message}`);
     reply.code(401).send(exception);
   }
 };

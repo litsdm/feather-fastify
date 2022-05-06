@@ -6,3 +6,6 @@
 .env
 
 .now
+pnpm-lock.yaml
+yarn-error.log
+yarn.lock
